@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="load_audio">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>20</y>
+      <x>60</x>
+      <y>30</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="gc">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>20</y>
+      <x>550</x>
+      <y>110</y>
       <width>121</width>
       <height>23</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QLabel" name="pitch">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>20</y>
+      <x>400</x>
+      <y>50</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QPushButton" name="play">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>20</y>
+      <x>260</x>
+      <y>50</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -69,8 +69,8 @@
    <widget class="QPushButton" name="pause">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>50</y>
+      <x>260</x>
+      <y>80</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -82,8 +82,8 @@
    <widget class="QPushButton" name="export_audio">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>50</y>
+      <x>60</x>
+      <y>130</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -95,8 +95,8 @@
    <widget class="QLabel" name="speed">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>50</y>
+      <x>400</x>
+      <y>90</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -108,18 +108,18 @@
    <widget class="QTextBrowser" name="gc_result">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>50</y>
-      <width>261</width>
-      <height>51</height>
+      <x>550</x>
+      <y>30</y>
+      <width>191</width>
+      <height>71</height>
      </rect>
     </property>
    </widget>
    <widget class="QDoubleSpinBox" name="speed_spin">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>50</y>
+      <x>440</x>
+      <y>90</y>
       <width>62</width>
       <height>22</height>
      </rect>
@@ -137,8 +137,8 @@
    <widget class="QDoubleSpinBox" name="pitch_spin">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>20</y>
+      <x>440</x>
+      <y>50</y>
       <width>62</width>
       <height>22</height>
      </rect>
@@ -148,6 +148,42 @@
     </property>
     <property name="value">
      <double>1.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="export_name">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>100</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="wav">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>110</y>
+      <width>47</width>
+      <height>12</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>.wav</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="enterExportNmae">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>80</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enter expoet name:</string>
     </property>
    </widget>
   </widget>
