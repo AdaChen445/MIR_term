@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtWidgets import QApplication, QFileDialog
 import librosa
+from src.infer import audio_infer
 import matplotlib.pyplot as plt
 import sys
 import ui
@@ -34,6 +35,12 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         self.pitch_spin.valueChanged.connect(self.pitch_shift)
         self.speed_spin.valueChanged.connect(self.speed_shift)
         self.gc.clicked.connect(self.genre_classify)
+
+        # for timbre transfer==========================================================
+        self.transfer_button.clicked.connect(self.transfer)
+        self.timbre_path = r"./timbre_transfer_weight"
+        self.recover_button.clicked.connect(self.timbre_recover)
+        self.pre_transfer_audio = None
 
         
 
@@ -104,10 +111,29 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         img = preprocess_input(img)
         return img
 
+    def transfer(self):
+        timbre_dict = {"Trumpet":1, "Violin":2, "Acoustic Guitar":3}
+        # source_label = self.source_comboBox.currentText()
+        self.pre_transfer_audio = self.audio_edited
+        sf.write('temp/temp.wav', self.audio_edited, self.sr, 'PCM_24')
+        target_label = self.target_comboBox.currentText()
+        # source_index = timbre_dict[source_label]
+        target_index = timbre_dict[target_label]
+        audio_infer('temp/temp.wav', target_index)
+        self.audio_edited, self.sr = librosa.load('temp/temp.wav')
+        # print(source_label)
+
+    def timbre_recover(self):
+        self.audio_edited = self.pre_transfer_audio
+        sf.write('temp/temp.wav', self.audio_edited, self.sr, 'PCM_24')
+
+
 def scale_minmax(X, min=0.0, max=1.0): #new added
     X_std = (X - X.min()) / (X.max() - X.min())
     X_scaled = X_std * (max - min) + min
     return X_scaled
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
