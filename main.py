@@ -49,8 +49,8 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
     def open_file_dialog_and_read_audio(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"./example_data","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
-        self.audio, self.sr = librosa.load(fileName)
+        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"C:\Users\fumchin\Music","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
+        self.audio, self.sr = librosa.load(fileName, sr=22050)
         self.audio_edited = self.audio
 
     def play_audio(self): #edited
@@ -77,13 +77,13 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         img = self.stack3channels()
         pred = self.model.predict(img)
         normalized_pred = pred*1/np.sum(pred)
-        print(normalized_pred)
         pred_ind = np.argsort(-pred, axis=1)
         self.gc_result.setText(str(self.le.classes_[pred_ind[0][0]])+' '+str(normalized_pred[0][pred_ind[0][0]])+'\n'+
                 str(self.le.classes_[pred_ind[0][1]])+' '+str(normalized_pred[0][pred_ind[0][1]])+'\n'+
                 str(self.le.classes_[pred_ind[0][2]])+' '+str(normalized_pred[0][pred_ind[0][2]]))  
 
     def audio2feature(self, y, sr, nfft): #new added
+        y=y[sr*5:sr*15]
         D1 = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, n_fft=nfft, win_length=512)
         D1 = np.log(D1 + 1e-9)
         D1 = scale_minmax(D1, 0, 255).astype(np.uint8)
@@ -124,7 +124,7 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         # print(source_label)
 
     def timbre_recover(self):
-        self.audio_edited = self.pre_transfer_audio
+        self.audio_edited = self.audio
         sf.write('temp/temp.wav', self.audio_edited, self.sr, 'PCM_24')
 
 
