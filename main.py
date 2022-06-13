@@ -49,7 +49,7 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
     def open_file_dialog_and_read_audio(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"C:\Users\fumchin\Music","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
+        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"./example_data","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
         self.audio, self.sr = librosa.load(fileName, sr=22050)
         self.audio_edited = self.audio
 
