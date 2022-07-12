@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtWidgets import QApplication, QFileDialog
 import librosa
+from src.infer import audio_infer
 import matplotlib.pyplot as plt
 import sys
 import ui
@@ -35,6 +36,12 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         self.speed_spin.valueChanged.connect(self.speed_shift)
         self.gc.clicked.connect(self.genre_classify)
 
+        # for timbre transfer==========================================================
+        self.transfer_button.clicked.connect(self.transfer)
+        self.timbre_path = r"./timbre_transfer_weight"
+        self.recover_button.clicked.connect(self.timbre_recover)
+        self.pre_transfer_audio = None
+
         
 
         
@@ -42,8 +49,8 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
     def open_file_dialog_and_read_audio(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"C:\Users\fumchin\Music","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
-        self.audio, self.sr = librosa.load(fileName)
+        fileName, _ = QFileDialog.getOpenFileName(self,"Choose your file", r"./example_data","All Files (*);;MP3 Files (*.mp3);;WAV Files (*.wav)", options=options)
+        self.audio, self.sr = librosa.load(fileName, sr=22050)
         self.audio_edited = self.audio
 
     def play_audio(self): #edited
@@ -70,13 +77,13 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         img = self.stack3channels()
         pred = self.model.predict(img)
         normalized_pred = pred*1/np.sum(pred)
-        print(normalized_pred)
         pred_ind = np.argsort(-pred, axis=1)
         self.gc_result.setText(str(self.le.classes_[pred_ind[0][0]])+' '+str(normalized_pred[0][pred_ind[0][0]])+'\n'+
                 str(self.le.classes_[pred_ind[0][1]])+' '+str(normalized_pred[0][pred_ind[0][1]])+'\n'+
                 str(self.le.classes_[pred_ind[0][2]])+' '+str(normalized_pred[0][pred_ind[0][2]]))  
 
     def audio2feature(self, y, sr, nfft): #new added
+        y=y[sr*5:sr*15]
         D1 = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, n_fft=nfft, win_length=512)
         D1 = np.log(D1 + 1e-9)
         D1 = scale_minmax(D1, 0, 255).astype(np.uint8)
@@ -104,10 +111,29 @@ class MainFrame(QtWidgets.QMainWindow, ui.Ui_MainWindow):
         img = preprocess_input(img)
         return img
 
+    def transfer(self):
+        timbre_dict = {"Trumpet":1, "Violin":2, "Acoustic Guitar":3}
+        # source_label = self.source_comboBox.currentText()
+        self.pre_transfer_audio = self.audio_edited
+        sf.write('temp/temp.wav', self.audio_edited, self.sr, 'PCM_24')
+        target_label = self.target_comboBox.currentText()
+        # source_index = timbre_dict[source_label]
+        target_index = timbre_dict[target_label]
+        audio_infer('temp/temp.wav', target_index)
+        self.audio_edited, self.sr = librosa.load('temp/temp.wav')
+        # print(source_label)
+
+    def timbre_recover(self):
+        self.audio_edited = self.audio
+        sf.write('temp/temp.wav', self.audio_edited, self.sr, 'PCM_24')
+
+
 def scale_minmax(X, min=0.0, max=1.0): #new added
     X_std = (X - X.min()) / (X.max() - X.min())
     X_scaled = X_std * (max - min) + min
     return X_scaled
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
